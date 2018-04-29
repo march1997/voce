@@ -66,7 +66,7 @@ for word1 in find:
 for i in range(4):
     for word1 in controls:
         sentence1 = sentence0 + word1
-        if word1 == 'ข้ามไป ที่ นาทีที่':
+        if word1 == 'ข้ามไป นาทีที่':
             for word2 in numbers:
                 sentence2 = sentence1 + ' ' + word2
                 print(sentence2)
