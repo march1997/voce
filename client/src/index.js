@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   handleSuccess(stream) {
-		let audio = document.querySelector('audio');
+		let audio = this.refs.audio
 		let audioTracks = stream.getAudioTracks();
 		console.log('Got stream with constraints:', constraints);
 		console.log('Using audio device: ' + audioTracks[0].label);
@@ -48,8 +48,8 @@ class App extends Component {
 			console.log('Stream ended');
 		};
 		window.stream = stream; // make variable available to browser console
-		audio.srcObject = stream;
-		console.log(stream)
+		// audio.srcObject = stream;
+		// console.log(stream)
 	}
 
 	handleError(error) {
@@ -59,10 +59,9 @@ class App extends Component {
   componentDidMount () {
 		const constraints = window.constraints = {
 			audio: true,
-			video: false
 		}
 
-		navigator.mediaDevices.getUserMedia(constraints).then(this.handleSuccess).catch(this.handleError)
+		navigator.mediaDevices.getUserMedia(constraints).then(this.handleSuccess.bind(this)).catch(this.handleError)
 	}
 
   componentWillUpdate (nextProps, nextState) {
@@ -78,8 +77,11 @@ class App extends Component {
     return (
       <div>
         {/* <Example /> */}
-        <audio autoPlay></audio>
-        <SearchBar onSearchTermChange={ videoSearch }/>
+        <audio ref="audio" controls autoPlay></audio>
+        <SearchBar
+          onSearchTermChange={ videoSearch }
+          parent={ this.refs }  
+        />
         <VideoDetail 
           onYTPlayerReady={ player => this.setState({ player }) }
           video={ this.state.selectedVideo }
