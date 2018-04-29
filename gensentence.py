@@ -2,7 +2,7 @@ find = ['ค้นหา', 'หา', 'เสิร์ช', 'ช่วยหา']
 video = [' วิดีโอ', '']
 modifier = ['รีวิว', 'วิธีทำ', 'ท่องเที่ยว', 'ตัวอย่าง', 'เพลง', 'สอน']
 things = ['ร้านอาหาร', 'คาเฟ่', 'มือถือ', 'หนังสือ', 'ภาพยนต์']
-food = ['ไข่เจียว', 'ไข่คน', 'ข้าวผัด', 'พาสต้า', 'เฟรนช์โทส']
+food = ['ไข่เจียว', 'ไข่คน', 'ข้าวผัด', 'พาสต้า', 'ซูชิ', 'ราเมง']
 places = ['ฮ่องกง', 'นิวยอร์ค', 'ปารีส', 'โรม', 'ลอนดอน', 'กรุงเทพ', 'เชียงใหม่', 'ภูเก็ต', 'ไทย', 'อิตาลี', 'ฝรั่งเศส', 'ญี่ปุ่น', 'เกาหลี', 'อเมริกา', 'ยุโรป', 'ออสเตรเลีย']
 movies = ['อเวนเจอร์', 'สเตรนเจอร์ธิงส์', 'อินเซปชั่น', 'แฮรี่พ็อตเตอร์', 'บุพเพสันนิวาส', 'เกมอำนาจ', 'เกมออฟโธรนส์']
 music = ['รัก', 'เศร้า', 'คนโสด', 'ฮิต', 'ใหม่']
@@ -45,14 +45,14 @@ for word1 in find:
                     print(sentence4)
             elif word3 == 'สอน':
                 for word4 in teach:
-                    sentence4 = sentence3 + word4 + ' '
+                    sentence4 = sentence3 + word4
                     if word4 == 'ภาษา':
                         for word5 in languages:
-                            sentence5 = sentence4 + word5
+                            sentence5 = sentence4 + ' ' + word5
                             print(sentence5)
                     elif word4 == 'วิธี':
                         for word5 in foodaction:
-                            sentence5 = sentence4 + word5 + ' '
+                            sentence5 = sentence4 + ' ' + word5 + ' '
                             for word6 in food:
                                 sentence6 = sentence5 + word6
                                 print(sentence6)
