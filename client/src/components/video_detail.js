@@ -16,7 +16,6 @@ export default class VideoDetail extends Component {
   }
   _onReady (event) {
     this.props.onYTPlayerReady(event.target)
-    event.target.pauseVideo()
   }
 
   render () {

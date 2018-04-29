@@ -11,7 +11,7 @@ const API_KEY = 'AIzaSyB_8kDNk0OpSz_OBJtOWcFInO4LyBQSrYU'
 class App extends Component {
   constructor (props) {
     super(props)
-		console.log(React.version)
+		
     this.state = { 
       videos: [],
       selectedVideo: null,
@@ -44,7 +44,7 @@ class App extends Component {
     
     return (
       <div>
-				{/* <Example /> */}
+        {/* <Example /> */}
         <SearchBar onSearchTermChange={ videoSearch }/>
         <VideoDetail 
           onYTPlayerReady={ player => this.setState({ player }) }
@@ -58,13 +58,20 @@ class App extends Component {
     )
   }
 
-  componentDidMount () {
-    var tag = document.createElement('script')
-    tag.id = "iframe-control"
-    tag.src = "https://www.youtube.com/iframe_api"
-    var firstScriptTag = document.getElementsByTagName('script')[0]
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+  componentDidUpdate () {
+    if (!this.state.player)
+      return
+    
   }
+
+
+  // componentDidMount () {
+  //   var tag = document.createElement('script')
+  //   tag.id = "iframe-control"
+  //   tag.src = "https://www.youtube.com/iframe_api"
+  //   var firstScriptTag = document.getElementsByTagName('script')[0]
+  //   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+  // }
 }
 
 ReactDOM.render(<App />, document.querySelector('.container'))
