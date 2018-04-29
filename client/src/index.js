@@ -14,7 +14,8 @@ class App extends Component {
 		console.log(React.version)
     this.state = { 
       videos: [],
-      selectedVideo: null
+      selectedVideo: null,
+      player: null
     }
 
 		this.initialVideoSearch()
@@ -22,7 +23,7 @@ class App extends Component {
 	}
 
   initialVideoSearch () {
-    YTSearch({ key: API_KEY, term: 'surfboards' }, (videos) => {
+    YTSearch({ key: API_KEY, term: 'Doraemon' }, (videos) => {
 			this.setState({ 
 				videos,
 				selectedVideo: videos[0]
@@ -45,13 +46,24 @@ class App extends Component {
       <div>
 				{/* <Example /> */}
         <SearchBar onSearchTermChange={ videoSearch }/>
-        <VideoDetail video={ this.state.selectedVideo }/>
+        <VideoDetail 
+          onYTPlayerReady={ player => this.setState({ player }) }
+          video={ this.state.selectedVideo }
+        />
         <VideoList 
           onVideoSelect={ selectedVideo => this.setState({ selectedVideo }) }
           videos={ this.state.videos } 
         />
       </div>      
     )
+  }
+
+  componentDidMount () {
+    var tag = document.createElement('script')
+    tag.id = "iframe-control"
+    tag.src = "https://www.youtube.com/iframe_api"
+    var firstScriptTag = document.getElementsByTagName('script')[0]
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
   }
 }
 
