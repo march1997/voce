@@ -11,7 +11,7 @@ const API_KEY = 'AIzaSyB_8kDNk0OpSz_OBJtOWcFInO4LyBQSrYU'
 class App extends Component {
   constructor (props) {
     super(props)
-		console.log(React.version)
+		
     this.state = { 
       videos: [],
       selectedVideo: null,
@@ -39,12 +39,46 @@ class App extends Component {
     })
   }
 
+  handleSuccess(stream) {
+		let audio = document.querySelector('audio');
+		let audioTracks = stream.getAudioTracks();
+		console.log('Got stream with constraints:', constraints);
+		console.log('Using audio device: ' + audioTracks[0].label);
+		stream.oninactive = function() {
+			console.log('Stream ended');
+		};
+		window.stream = stream; // make variable available to browser console
+		audio.srcObject = stream;
+		console.log(stream)
+	}
+
+	handleError(error) {
+		console.log('navigator.getUserMedia error: ', error);
+	}
+
+  componentDidMount () {
+		const constraints = window.constraints = {
+			audio: true,
+			video: false
+		}
+
+		navigator.mediaDevices.getUserMedia(constraints).then(this.handleSuccess).catch(this.handleError)
+	}
+
+  componentWillUpdate (nextProps, nextState) {
+    if (!nextState.player)
+      return
+    
+    nextState.player.mute()
+  }
+
   render () {
     const videoSearch = _.debounce((term) => { this.videoSearch(term) }, 600)
     
     return (
       <div>
-				{/* <Example /> */}
+        {/* <Example /> */}
+        <audio autoPlay></audio>
         <SearchBar onSearchTermChange={ videoSearch }/>
         <VideoDetail 
           onYTPlayerReady={ player => this.setState({ player }) }
@@ -56,14 +90,6 @@ class App extends Component {
         />
       </div>      
     )
-  }
-
-  componentDidMount () {
-    var tag = document.createElement('script')
-    tag.id = "iframe-control"
-    tag.src = "https://www.youtube.com/iframe_api"
-    var firstScriptTag = document.getElementsByTagName('script')[0]
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
   }
 }
 
