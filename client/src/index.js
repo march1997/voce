@@ -61,15 +61,8 @@ class App extends Component {
 			audio: true,
 		}
 
-		navigator.mediaDevices.getUserMedia(constraints).then(this.handleSuccess.bind(this)).catch(this.handleError)
+		// navigator.mediaDevices.getUserMedia(constraints).then(this.handleSuccess.bind(this)).catch(this.handleError)
 	}
-
-  componentWillUpdate (nextProps, nextState) {
-    if (!nextState.player)
-      return
-    
-    nextState.player.mute()
-  }
 
   render () {
     const videoSearch = _.debounce((term) => { this.videoSearch(term) }, 600)
@@ -80,7 +73,10 @@ class App extends Component {
         <audio ref="audio" controls autoPlay></audio>
         <SearchBar
           onSearchTermChange={ videoSearch }
-          parent={ this.refs }  
+          onVideoSelect={ selectedVideo => this.setState({ selectedVideo }) } 
+          parent={ this.refs }
+          player={ this.state.player } 
+          videos={ this.state.videos } 
         />
         <VideoDetail 
           onYTPlayerReady={ player => this.setState({ player }) }
@@ -92,6 +88,12 @@ class App extends Component {
         />
       </div>      
     )
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.player !== prevState.player) {
+      this.state.player.mute()
+    }
   }
 }
 
