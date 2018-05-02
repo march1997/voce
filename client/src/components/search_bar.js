@@ -16,8 +16,8 @@ class SearchBar extends Component {
 
   initializeDictate () {
     return new Dictate({
-      server : "ws://localhost:8080/client/ws/speech",
-      serverStatus : "ws://localhost:8080/client/ws/status",
+      server : "ws://localhost:10101/client/ws/speech",
+      serverStatus : "ws://localhost:10101/client/ws/status",
       recorderWorkerPath : '/lib/recorderWorker.js',
       onReadyForSpeech : () => {
         console.log("READY FOR SPEECH")
@@ -29,21 +29,36 @@ class SearchBar extends Component {
         console.log("END OF SESSION")
       },
       onServerStatus : (json) => {
-        console.log(`available: ${workerjson.num_workers_available}`)
+        // console.log(`available: ${json.num_workers_available}`)
+        if (json.num_workers_available > 0) {
+          this.refs.listen.disabled = false
+          this.refs.listen.classList.remove("deactive-listen")
+          this.refs.listen.classList.add("active-listen")
+        } else {
+          this.refs.listen.disabled = true
+          this.refs.listen.classList.remove("active-listen")
+          this.refs.listen.classList.add("deactive-listen")
+        }
       },
-      onPartialResults : (hypos) => {
-        console.log(`onPartialResults: ${hypos[0].transcript}`)
-      },
-      onResults : (hypos) => {        
-        console.log(`onResults: ${hypos[0].transcript}`)
+      // onPartialResults : (hypos) => {
+        // console.log(`onPartialResults: ${hypos[0].transcript}`)
+      // },
+      onResults : (hypos) => {      
+        const result = hypos[0].transcript
+        console.log(`onResults: ${result.replace(/\s/g,'').replace('.','')}`)
+        // console.log(result.split(" ")[0])
+        this.handleResult(result)
+        if (this.refs.listen.className === "deactive-listen") {
+          this.onListenButtonClick()
+        }
       },
       onError : (code, data) => {
         console.log(`onError: ${code}, ${data}`)
-        dictate.cancel();
+        // this.dictate.cancel();
       },
-      onEvent : function(code, data) {
-        console.log(`onEvent: ${code}, ${data}`)
-      }
+      // onEvent : function(code, data) {
+      //   console.log(`onEvent: ${code}, ${data}`)
+      // }
     })
   }
 
@@ -57,13 +72,113 @@ class SearchBar extends Component {
     console.log('Recorder stopped: ', event)
   }
 
+  handleResult (str) {
+    const splitStr = str.split(" ")
+    const trimStr = str.replace(' ', '').replace('.', '').trim()
+    if (splitStr[0] === 'เสิร์ช' || splitStr[0] === 'ค้นหา' || splitStr[0] === 'ช่วยหา' || splitStr[0] === 'หา') {
+      const term = splitStr.reduce((acc, currVal, currIdx, array) => {
+        return currIdx === 1 ? currVal : `${acc} ${currVal}`
+      }).replace('.','').trim()
+
+      this.refs.search.value = term
+      this.setState({ term })
+      this.props.onSearchTermChange(term)
+    } else if (trimStr === 'เล่นวิดิโอ' || trimStr === 'เล่นวีดิโอ' || trimStr === 'เล่นวิดีโอ' || trimStr === 'เล่นวีดีโอ') {
+      this.props.player.playVideo()
+    } else if (trimStr === 'หยุดวิดิโอ' || trimStr === 'หยุดวีดิโอ' || trimStr === 'หยุดวิดีโอ' || trimStr === 'หยุดวีดีโอ') {
+      this.props.player.pauseVideo()
+    } else if (trimStr === 'เปิดเสียง') {
+      this.props.player.unMute()
+    } else if (trimStr === 'เงียบ' || trimStr === 'ปิดเสียง') {
+      this.props.player.mute()
+    } else if (trimStr === 'เร่งความเร็ว') {
+      switch (this.props.player.getPlaybackRate()) {
+        case 0.25:
+          this.props.player.setPlaybackRate(0.5)
+          break
+        case 0.5:
+          this.props.player.setPlaybackRate(1)
+          break
+        case 1:
+          this.props.player.setPlaybackRate(1.5)
+          break
+        case 1.5:
+          this.props.player.setPlaybackRate(2)
+          break
+        default:
+          break
+      }
+    } else if (trimStr === 'ชะลอความเร็ว') {
+      switch (this.props.player.getPlaybackRate()) {
+        case 0.5:
+          this.props.player.setPlaybackRate(0.25)
+          break
+        case 1:
+          this.props.player.setPlaybackRate(0.5)
+          break
+        case 1.5:
+          this.props.player.setPlaybackRate(1)
+          break
+        case 2:
+          this.props.player.setPlaybackRate(1.5)
+          break
+        default:
+          break
+      }
+    } else if (splitStr[0] === 'ข้ามไป') {
+      switch (splitStr[2]) {
+        case 'หนึ่ง':
+          this.props.player.seekTo(60)
+          break
+        case 'สอง':
+          this.props.player.seekTo(120)
+          break
+        case 'สาม':
+          this.props.player.seekTo(180)
+          break
+        case 'สี่':
+          this.props.player.seekTo(240)
+          break
+        case 'ห้า':
+          this.props.player.seekTo(300)
+          break
+        case 'หก':
+          this.props.player.seekTo(360)
+          break
+        case 'เจ็ด':
+          this.props.player.seekTo(420)
+          break
+        case 'แปด':
+          this.props.player.seekTo(480)
+          break
+        case 'เก้า':
+          this.props.player.seekTo(540)
+          break
+        case 'สิบ':
+          this.props.player.seekTo(600)
+          break
+        default:
+          break
+      }
+    }
+  }
+
   onListenButtonClick () {
-    if (this.refs.listen.textContent === "Listen") {
-      this.refs.listen.textContent = "Stop Listen"
+    console.log(this.refs.listen.className)
+    if (this.refs.listen.className === "active-listen") {
+      // this.refs.listen.textContent = "Stop Listen"
+      // this.refs.listen.disabled = true
+      // this.refs.listen.classList.remove("active-listen")
+      // this.refs.listen.classList.add("deactive-listen")
       this.dictate.startListening()
     } else {
-      this.refs.listen.textContent = "Listen"
-      this.dictate.stopListening()
+      // this.refs.listen.textContent = "Listen"
+      // this.refs.listen.disabled = false
+      // this.refs.listen.classList.remove("deactive-listen")
+      // this.refs.listen.classList.add("active-listen")
+      this.dictate.cancel()
+      // this.dictate.stopListening()
+      // setTimeout(() => { this.dictate.cancel() }, 1500)
     }
     // if (this.refs.listen.textContent === "Listen") {
     //   this.recordedBlobs = []
@@ -105,8 +220,8 @@ class SearchBar extends Component {
   render () {
     return (
       <div className="search-bar">
-        <button ref="listen" onClick={ this.onListenButtonClick.bind(this) }>Listen</button>
-        <input className="search-input" onChange={ event => this.onInputChange(event.target.value) } />
+        <input className="search-input" ref="search" onChange={ event => this.onInputChange(event.target.value) } />
+        <button className="deactive-listen" ref="listen" onClick={ this.onListenButtonClick.bind(this) }>Listen</button>
       </div>
     )
   }

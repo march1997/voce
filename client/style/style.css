@@ -29,3 +29,13 @@
 .details {
 	margin-top: 20px;
 }
+
+.active-listen {
+  color: black;
+  background-color: whitesmoke
+}
+
+.deactive-listen {
+  color: grey;
+  background-color: darkgrey
+}

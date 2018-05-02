@@ -35,6 +35,7 @@ class App extends Component {
     YTSearch({ key: API_KEY, term }, (videos) => {
       this.setState({ 
         videos,
+        selectedVideo: videos[0]
       })
     })
   }
@@ -70,7 +71,7 @@ class App extends Component {
     return (
       <div>
         {/* <Example /> */}
-        <audio ref="audio" controls autoPlay></audio>
+        {/* <audio ref="audio" controls autoPlay></audio> */}
         <SearchBar
           onSearchTermChange={ videoSearch }
           onVideoSelect={ selectedVideo => this.setState({ selectedVideo }) } 
